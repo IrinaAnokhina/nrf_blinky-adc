@@ -83,7 +83,7 @@
 #define LEDBUTTON_LED                   BSP_BOARD_LED_2                         /**< LED to be toggled with the help of the LED Button Service. */
 #define LEDBUTTON_BUTTON                BSP_BUTTON_0                            /**< Button that will trigger the notification event with the LED Button Service */
 
-#define DEVICE_NAME                     "Nordic_Blinky"                         /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "Nordic_ADC"                         /**< Name of device. Will be included in the advertising data. */
 
 #define APP_BLE_OBSERVER_PRIO           3                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
@@ -571,7 +571,7 @@ static void idle_state_handle(void)
 #define SAMPLES_IN_BUFFER 5
 volatile uint8_t state = 1;
 
-static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(0);
+static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1);
 static nrf_saadc_value_t     m_buffer_pool[2][SAMPLES_IN_BUFFER];
 static nrf_ppi_channel_t     m_ppi_channel;
 static uint32_t              m_adc_evt_counter;
@@ -652,7 +652,7 @@ void saadc_init(void)
 {
     ret_code_t err_code;
     nrf_saadc_channel_config_t channel_config =
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN0);
+        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1);
 
     err_code = nrf_drv_saadc_init(NULL, saadc_callback);
     APP_ERROR_CHECK(err_code);
@@ -673,8 +673,14 @@ void saadc_init(void)
  */
 int main(void)
 {
+ uint32_t err_code = NRF_LOG_INIT(NULL);
+    APP_ERROR_CHECK(err_code);
+
+    NRF_LOG_DEFAULT_BACKENDS_INIT();
+ ret_code_t ret_code = nrf_pwr_mgmt_init();
+    APP_ERROR_CHECK(ret_code);
     // Initialize.
-    log_init();
+//    log_init();
     leds_init();
     timers_init();
     buttons_init();
@@ -685,11 +691,9 @@ int main(void)
     services_init();
     advertising_init();
     conn_params_init();
-
- saadc_init();
+    saadc_init();
     saadc_sampling_event_init();
     saadc_sampling_event_enable();
-
     // Start execution.
     NRF_LOG_INFO("Blinky example started.");
     advertising_start();
@@ -697,6 +701,7 @@ int main(void)
     // Enter main loop.
     for (;;)
     {
+
         idle_state_handle();
     }
 }
