@@ -105,6 +105,17 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
+#define SAMPLES_IN_BUFFER 1
+volatile uint8_t state = 1;
+
+
+static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1);
+static nrf_saadc_value_t     m_buffer_pool[1][SAMPLES_IN_BUFFER];
+static nrf_ppi_channel_t     m_ppi_channel;
+static uint32_t              m_adc_evt_counter;
+
+volatile float precise_result;
+volatile int16_t result = 0;
 
 BLE_LBS_DEF(m_lbs);                                                             /**< LED Button Service instance. */
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
@@ -494,22 +505,22 @@ static void ble_stack_init(void)
  * @param[in] pin_no        The pin that the event applies to.
  * @param[in] button_action The button action (press/release).
  */
-static void button_event_handler(uint8_t pin_no, uint8_t button_action)
+static void button_event_handler(uint8_t pin_no, float button_action)
 {
     ret_code_t err_code;
-
+    button_action = precise_result;
     switch (pin_no)
     {
         case LEDBUTTON_BUTTON:
             NRF_LOG_INFO("Send button state change.");
-            err_code = ble_lbs_on_button_change(m_conn_handle, &m_lbs, button_action);
-            if (err_code != NRF_SUCCESS &&
-                err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
-                err_code != NRF_ERROR_INVALID_STATE &&
-                err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-            {
-                APP_ERROR_CHECK(err_code);
-            }
+//            err_code = ble_lbs_on_button_change(m_conn_handle, &m_lbs, button_action);
+//            if (err_code != NRF_SUCCESS &&
+//                err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
+//                err_code != NRF_ERROR_INVALID_STATE &&
+//                err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+//            {
+//                APP_ERROR_CHECK(err_code);
+//            }
             break;
 
         default:
@@ -568,15 +579,6 @@ static void idle_state_handle(void)
     }
 }
 
-#define SAMPLES_IN_BUFFER 1
-volatile uint8_t state = 1;
-volatile float precise_result;
-volatile int16_t result = 0;
-
-static const nrf_drv_timer_t m_timer = NRF_DRV_TIMER_INSTANCE(1);
-static nrf_saadc_value_t     m_buffer_pool[1][SAMPLES_IN_BUFFER];
-static nrf_ppi_channel_t     m_ppi_channel;
-static uint32_t              m_adc_evt_counter;
 
 
 void timer_handler(nrf_timer_event_t event_type, void * p_context)
@@ -646,6 +648,14 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
             NRF_LOG_INFO("%d", p_event->data.done.p_buffer[i]);
         }
         m_adc_evt_counter++;
+         err_code = ble_lbs_on_button_change(m_conn_handle, &m_lbs,precise_result);
+            if (err_code != NRF_SUCCESS &&
+                err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
+                err_code != NRF_ERROR_INVALID_STATE &&
+                err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+            {
+                APP_ERROR_CHECK(err_code);
+            }
     }
 }
 
@@ -686,6 +696,9 @@ int main(void)
     leds_init();
     timers_init();
     buttons_init();
+    saadc_init();
+    saadc_sampling_event_init();
+    saadc_sampling_event_enable();
     power_management_init();
     ble_stack_init();
     gap_params_init();
@@ -693,9 +706,7 @@ int main(void)
     services_init();
     advertising_init();
     conn_params_init();
-    saadc_init();
-    saadc_sampling_event_init();
-    saadc_sampling_event_enable();
+   
     // Start execution.
     NRF_LOG_INFO("Blinky example started.");
     advertising_start();
