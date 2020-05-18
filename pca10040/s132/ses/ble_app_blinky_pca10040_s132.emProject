@@ -118,7 +118,11 @@
       <file file_name="../../../../../../components/softdevice/common/nrf_sdh_ble.c" />
       <file file_name="../../../../../../components/softdevice/common/nrf_sdh_soc.c" />
     </folder>
-    <configuration Name="Release" c_user_include_directories="." />
+    <configuration
+      Connection="USB 682529431"
+      Name="Release"
+      c_user_include_directories="."
+      gdb_server_hostname="localhost" />
   </project>
   <configuration
     Name="Release"
