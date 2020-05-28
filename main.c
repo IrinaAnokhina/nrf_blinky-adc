@@ -114,7 +114,7 @@ static nrf_saadc_value_t     m_buffer_pool[1][SAMPLES_IN_BUFFER];
 static nrf_ppi_channel_t     m_ppi_channel;
 static uint32_t              m_adc_evt_counter;
 
-volatile uint16_t precise_result;
+volatile uint8_t precise_result;
 volatile int16_t result = 0;
 
 BLE_LBS_DEF(m_lbs);                                                             /**< LED Button Service instance. */
@@ -639,7 +639,7 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         result = *(p_event->data.done.p_buffer);
         err_code = nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAMPLES_IN_BUFFER);
         APP_ERROR_CHECK(err_code);
-        precise_result = ((float)result + 3)/1024 * 3.3 * 100; 
+        precise_result = ((float)result)/1024 * 3.3 * 10; 
         int i;
         NRF_LOG_INFO("ADC event number: %d", (int)m_adc_evt_counter);
 

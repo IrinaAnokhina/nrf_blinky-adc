@@ -1,5 +1,5 @@
 Output/ble_app_blinky_pca10040_s132\ Release/Obj/ble_lbs.o: \
- C:\Ira\Ira\Ira\nRF5_SDK_16.0.0_98a08e2\components\ble\ble_services\ble_lbs\ble_lbs.c \
+ C:\Ira\Ira\Ira\nRF5_SDK_16.0.0_98a08e2\components\ble\ble_services\ble_lbs_my\ble_lbs.c \
  ../../../../../../components/libraries/util/sdk_common.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.52/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 4.52/include/stdbool.h \
@@ -30,7 +30,7 @@ Output/ble_app_blinky_pca10040_s132\ Release/Obj/ble_lbs.o: \
  ../../../../../../components/softdevice/s132/headers/nrf_svc.h \
  ../../../../../../components/libraries/util/sdk_macros.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
- C:\Ira\Ira\Ira\nRF5_SDK_16.0.0_98a08e2\components\ble\ble_services\ble_lbs\ble_lbs.h \
+ C:\Ira\Ira\Ira\nRF5_SDK_16.0.0_98a08e2\components\ble\ble_services\ble_lbs_my\ble_lbs.h \
  ../../../../../../components/softdevice/s132/headers/ble.h \
  ../../../../../../components/softdevice/s132/headers/nrf_svc.h \
  ../../../../../../components/softdevice/s132/headers/nrf_error.h \

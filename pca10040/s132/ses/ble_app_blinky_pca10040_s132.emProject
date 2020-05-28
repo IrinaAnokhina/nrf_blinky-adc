@@ -111,7 +111,7 @@
       <file file_name="../../../../../../external/utf_converter/utf.c" />
     </folder>
     <folder Name="nRF_BLE_Services">
-      <file file_name="../../../../../../components/ble/ble_services/ble_lbs/ble_lbs.c" />
+      <file file_name="../../../../../../components/ble/ble_services/ble_lbs_my/ble_lbs.c" />
     </folder>
     <folder Name="nRF_SoftDevice">
       <file file_name="../../../../../../components/softdevice/common/nrf_sdh.c" />
